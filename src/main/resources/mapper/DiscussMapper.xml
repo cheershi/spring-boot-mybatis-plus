@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnar.springbootmybatisplus.mapper.DiscussMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.tnar.springbootmybatisplus.entity.Discuss">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="image" property="image"/>
+        <result column="content" property="content"/>
+        <result column="date" property="date"/>
+        <result column="weibo" property="wid"/>
+    </resultMap>
+
+    <resultMap id="andweibo" type="com.tnar.springbootmybatisplus.entity.Discuss">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="image" property="image"/>
+        <result column="content" property="content"/>
+        <result column="date" property="date" javaType="java.util.Date"/>
+        <association property="weibo" javaType="com.tnar.springbootmybatisplus.entity.Weibo">
+            <id column="id" property="id" />
+            <result column="name" property="name" />
+            <result column="image" property="image" />
+            <result column="content" property="content" />
+            <result column="date" property="date" javaType="java.util.Date"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="anddynamic" type="com.tnar.springbootmybatisplus.entity.Discuss">
+        <id column="did" property="id"/>
+        <result column="dname" property="name"/>
+        <result column="dimage" property="image"/>
+        <result column="dcontent" property="content"/>
+        <result column="ddate" property="date" javaType="java.util.Date"/>
+        <association property="weibo" javaType="com.tnar.springbootmybatisplus.entity.Weibo">
+            <id column="wid" property="id" />
+            <result column="wname" property="name" />
+            <result column="wimage" property="image" />
+            <result column="wcontent" property="content" />
+            <result column="wdate" property="date" javaType="java.util.Date"/>
+        </association>
+    </resultMap>
+
+
+
+    <select id="selectDiscussPage" resultMap="andweibo">
+        SELECT *
+         FROM discuss d , weibo w
+         WHERE d.wid = w.id
+    </select>
+    <select id="getDisById" resultType="com.tnar.springbootmybatisplus.entity.Discuss">
+        SELECT * FROM discuss d WHERE d.id = #{id}
+    </select>
+
+    <select id="selectDynamicDiscuss" parameterType="com.tnar.springbootmybatisplus.entity.Discuss" resultMap="anddynamic">
+        SELECT d.id did,
+        d.name dname,
+        d.image dimage,
+        d.content dcontent,
+        d.date ddate,
+        w.id wid,
+        w.name wname,
+        w.image wimage,
+        w.content wcontent,
+        w.date wdate
+         FROM discuss d , weibo w
+        WHERE d.wid = w.id
+         <trim prefix="and" prefixOverrides="and" >
+             <if test="id != null and id !=''">
+                 and d.id = #{id}
+             </if>
+             <if test="name!= null and name!=''">
+                 and d.name =#{name}
+             </if>
+             <if test="image!= null and image!=''">
+                 and d.image =#{image}
+             </if>
+             <if test="content !=null and content !=''">
+                 and d.content = #{content}
+             </if>
+             <if test="date !=null and date !=''">
+                 and d.date =#{date}
+             </if>
+             <if test="weibo!=null">
+                 <if test="weibo.id !=null and weibo.id != ''">
+                     and w.id =#{weibo.id}
+                 </if>
+                 <if test="weibo.name !=null and weibo.name != ''">
+                     and w.name =#{weibo.name}
+                 </if>
+                 <if test="weibo.image !=null and weibo.image != ''">
+                     and w.image =#{weibo.image}
+                 </if>
+                 <if test="weibo.content !=null and weibo.content !=''">
+                     and w.content = #{weibo.content}
+                 </if>
+                 <if test="weibo.date !=null and weibo.date !=''">
+                     and w.date =#{weibo.date}
+                 </if>
+             </if>
+
+         </trim>
+    </select>
+</mapper>

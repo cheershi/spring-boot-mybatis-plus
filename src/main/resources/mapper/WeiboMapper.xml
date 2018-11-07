@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tnar.springbootmybatisplus.mapper.WeiboMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.tnar.springbootmybatisplus.entity.Weibo">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="image" property="image" />
+        <result column="content" property="content" />
+        <result column="date" property="date" />
+    </resultMap>
+
+    <resultMap id="anddiscuss" type="com.tnar.springbootmybatisplus.entity.Weibo">
+        <id column="wid" property="id"></id>
+        <result column="wname" property="name"></result>
+        <result column="wimage" property="image"></result>
+        <result column="wcontent" property="content"></result>
+        <result column="wdate" property="date"></result>
+        <collection property="discusses" ofType="com.tnar.springbootmybatisplus.entity.Discuss">
+            <id column="did" property="id"></id>
+            <result column="dname" property="name"/>
+            <result column="dimage" property="image"/>
+            <result column="dcontent" property="content"/>
+            <result column="ddate" property="date" javaType="java.util.Date"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectPageWeiBo" resultMap="anddiscuss">
+        SELECT d.id did,
+        d.name dname,
+        d.image dimage,
+        d.content dcontent,
+        d.date ddate,
+        w.id wid,
+        w.name wname,
+        w.image wimage,
+        w.content wcontent,
+        w.date wdate
+         FROM discuss d , weibo w
+        WHERE d.wid = w.id
+    </select>
+
+</mapper>
